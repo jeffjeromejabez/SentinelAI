@@ -1,0 +1,359 @@
+.upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+/* ── Header ── */
+.upload-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.upload-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--neon);
+  background: rgba(0, 212, 255, 0.08);
+  border: 1px solid rgba(0, 212, 255, 0.22);
+  border-radius: 20px;
+  padding: 5px 14px;
+}
+
+.badge-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--neon);
+  box-shadow: 0 0 6px var(--neon);
+  animation: badge-blink 2s ease-in-out infinite;
+}
+
+@keyframes badge-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+.upload-title {
+  font-size: 46px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -1px;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.gradient-text {
+  background: var(--gradient-blue);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+}
+
+/* Soft ambient glow behind the gradient words — premium, not gaming */
+.gradient-text::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-blue);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: blur(18px) opacity(0.45);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.upload-subtitle {
+  font-size: 14.5px;
+  color: var(--text-muted);
+  line-height: 1.65;
+  max-width: 540px;
+  margin: 0;
+}
+
+/* ── Drop zone ── */
+.upload-zone {
+  background: rgba(4, 16, 36, 0.6);
+  border: 1.5px dashed rgba(0, 212, 255, 0.28);
+  border-radius: 14px;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+
+.upload-zone:hover,
+.upload-zone.dragging {
+  border-color: var(--neon);
+  border-style: solid;
+  background: rgba(0, 212, 255, 0.03);
+  box-shadow:
+    0 0 0 1px rgba(0, 212, 255, 0.1),
+    0 0 24px rgba(0, 191, 255, 0.12),
+    inset 0 0 48px rgba(0, 212, 255, 0.05);
+}
+
+.upload-zone.has-preview {
+  cursor: default;
+  border-style: solid;
+  border-color: rgba(0, 212, 255, 0.22);
+  min-height: 240px;
+}
+
+/* Placeholder */
+.upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 36px 20px;
+  pointer-events: none;
+  user-select: none;
+}
+
+.upload-icon-wrap {
+  width: 62px; height: 62px;
+  border-radius: 50%;
+  background: rgba(0, 212, 255, 0.09);
+  border: 1px solid rgba(0, 212, 255, 0.32);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 0 16px rgba(0, 191, 255, 0.3),
+    0 0 36px rgba(0, 191, 255, 0.15),
+    inset 0 0 16px rgba(0, 212, 255, 0.06);
+  margin-bottom: 4px;
+  animation: icon-breathe 3s ease-in-out infinite alternate;
+}
+
+@keyframes icon-breathe {
+  from { box-shadow: 0 0 14px rgba(0, 191, 255, 0.25), 0 0 30px rgba(0, 191, 255, 0.1),  inset 0 0 12px rgba(0, 212, 255, 0.05); }
+  to   { box-shadow: 0 0 22px rgba(0, 191, 255, 0.5),  0 0 50px rgba(0, 191, 255, 0.22), inset 0 0 20px rgba(0, 212, 255, 0.09); }
+}
+
+.upload-icon {
+  width: 26px; height: 26px;
+  color: var(--neon);
+}
+
+.upload-main-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.upload-link {
+  color: var(--neon);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.upload-sub-text {
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+
+/* Preview */
+.preview-container {
+  width: 100%;
+  min-height: 240px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+
+.preview-img {
+  max-width: 100%;
+  max-height: 320px;
+  border-radius: 8px;
+  object-fit: contain;
+  display: block;
+}
+
+.preview-overlay {
+  position: absolute;
+  top: 12px; right: 12px;
+}
+
+.preview-clear {
+  background: rgba(255, 55, 55, 0.14);
+  border: 1px solid rgba(255, 55, 55, 0.38);
+  color: #ff6b6b;
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+.preview-clear:hover { background: rgba(255, 55, 55, 0.28); }
+
+/* ── URL row ── */
+.url-row { width: 100%; }
+
+.url-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.url-icon {
+  position: absolute;
+  left: 14px;
+  width: 16px; height: 16px;
+  color: rgba(0, 212, 255, 0.45);
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.url-input {
+  width: 100%;
+  background: rgba(4, 16, 36, 0.6);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 10px;
+  padding: 13px 16px 13px 40px;
+  font-size: 14px;
+  color: var(--text-primary);
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.url-input::placeholder { color: var(--text-muted); }
+
+.url-input:focus {
+  border-color: rgba(0, 212, 255, 0.45);
+  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.08);
+}
+
+/* ── Result banner ── */
+.result-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+}
+
+.result-banner.danger {
+  background: rgba(255, 55, 55, 0.09);
+  border: 1px solid rgba(255, 55, 55, 0.32);
+  color: #ff6b6b;
+}
+
+.result-banner.safe {
+  background: rgba(0, 255, 150, 0.07);
+  border: 1px solid rgba(0, 255, 150, 0.28);
+  color: #00ff96;
+}
+
+.result-icon   { font-size: 17px; }
+.result-label  { flex: 1; }
+.result-confidence { font-size: 12px; opacity: 0.75; }
+
+/* ── Scan button ── */
+.btn-scan {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 15px 28px;
+  background: linear-gradient(90deg, rgba(0, 180, 255, 0.28) 0%, rgba(0, 100, 255, 0.28) 100%);
+  border: 1px solid rgba(0, 191, 255, 0.65);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 11px;
+  cursor: pointer;
+  letter-spacing: 0.4px;
+  font-family: inherit;
+  transition: box-shadow 0.25s, background 0.25s, transform 0.15s;
+  position: relative;
+  overflow: hidden;
+  /* Resting glow — already bright */
+  box-shadow:
+    0 0 15px rgba(0, 191, 255, 0.6),
+    0 0 35px rgba(0, 191, 255, 0.35);
+  animation: btn-pulse 2.8s ease-in-out infinite;
+}
+
+@keyframes btn-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 15px rgba(0, 191, 255, 0.6),
+      0 0 35px rgba(0, 191, 255, 0.35);
+  }
+  50% {
+    box-shadow:
+      0 0 22px rgba(0, 191, 255, 0.85),
+      0 0 55px rgba(0, 191, 255, 0.5),
+      0 0 80px rgba(0, 150, 255, 0.2);
+  }
+}
+
+.btn-scan::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.07) 50%, transparent 100%);
+  transform: translateX(-100%);
+  transition: transform 0.55s;
+}
+
+.btn-scan:hover:not(:disabled)::before { transform: translateX(100%); }
+
+.btn-scan:hover:not(:disabled) {
+  background: linear-gradient(90deg, rgba(0, 180, 255, 0.42) 0%, rgba(0, 100, 255, 0.42) 100%);
+  transform: translateY(-1px);
+  animation-play-state: paused;
+  box-shadow:
+    0 0 22px rgba(0, 191, 255, 0.9),
+    0 0 55px rgba(0, 191, 255, 0.55),
+    0 0 90px rgba(0, 150, 255, 0.25);
+}
+
+.btn-scan:active:not(:disabled) { transform: translateY(0); }
+
+.btn-scan:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  animation: none;
+  box-shadow: none;
+}
+
+.scan-icon { font-size: 16px; }
+
+.btn-spinner {
+  width: 15px; height: 15px;
+  border: 2px solid rgba(0, 212, 255, 0.25);
+  border-top-color: var(--neon);
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 600px) {
+  .upload-title { font-size: 32px; }
+}

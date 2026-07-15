@@ -1,0 +1,58 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --neon: #00d4ff;
+  --neon-dim: rgba(0, 212, 255, 0.12);
+  --neon-glow: 0 0 8px rgba(0, 212, 255, 0.7), 0 0 24px rgba(0, 212, 255, 0.35);
+  --neon-glow-strong: 0 0 12px rgba(0, 212, 255, 0.9), 0 0 40px rgba(0, 212, 255, 0.5), 0 0 80px rgba(0, 212, 255, 0.2);
+  --purple: #7b2fff;
+  --bg-dark: #050d1a;
+  --bg-card: rgba(6, 18, 38, 0.72);
+  --border-neon: rgba(0, 212, 255, 0.22);
+  --border-subtle: rgba(0, 212, 255, 0.12);
+  --text-primary: #dff0ff;
+  --text-muted: rgba(160, 210, 240, 0.55);
+  --gradient-blue: linear-gradient(90deg, #00d4ff 0%, #2979ff 55%, #7b2fff 100%);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+html, body { height: 100%; }
+
+body {
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  position: relative;
+  isolation: isolate;
+}
+
+/* Fine cyber grid */
+#root::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 212, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.045) 1px, transparent 1px);
+  background-size: 50px 50px;
+  pointer-events: none;
+  z-index: -2;
+}
+
+/* Ambient colour blobs */
+#root::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 55% 45% at 8% 85%,  rgba(100, 0, 255, 0.18) 0%, transparent 65%),
+    radial-gradient(ellipse 45% 40% at 92% 10%,  rgba(0, 180, 255, 0.14) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 50% at 50% 50%,  rgba(0, 30, 80, 0.5)   0%, transparent 100%);
+  pointer-events: none;
+  z-index: -1;
+}

@@ -1,0 +1,199 @@
+.cyber-deco {
+  position: absolute;
+  right: calc((100% - 860px) / 2 - 280px);
+  top: 48px;
+  width: 260px;
+  height: 560px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Rings ── */
+.deco-ring {
+  position: absolute;
+  border-radius: 50%;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  animation: ring-spin linear infinite;
+}
+
+.ring-outer {
+  width: 240px; height: 240px;
+  border: 1px solid rgba(0, 212, 255, 0.18);
+  animation-duration: 22s;
+}
+
+.ring-mid {
+  width: 170px; height: 170px;
+  border: 1px dashed rgba(123, 47, 255, 0.28);
+  animation-duration: 14s;
+  animation-direction: reverse;
+}
+
+.ring-inner {
+  width: 100px; height: 100px;
+  border: 1px solid rgba(0, 212, 255, 0.35);
+  animation-duration: 9s;
+}
+
+@keyframes ring-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ── Centre shield ── */
+.deco-center {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 72px; height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: shield-pulse 3s ease-in-out infinite alternate;
+}
+
+.deco-shield-svg { width: 100%; height: 100%; }
+
+@keyframes shield-pulse {
+  from { filter: drop-shadow(0 0 6px rgba(0, 212, 255, 0.4)); }
+  to   { filter: drop-shadow(0 0 18px rgba(0, 212, 255, 0.85)); }
+}
+
+/* ── Orbiting nodes ── */
+.deco-node {
+  position: absolute;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  top: 50%; left: 50%;
+  animation: node-orbit linear infinite;
+}
+
+.node-1 {
+  background: var(--neon);
+  box-shadow: 0 0 10px var(--neon), 0 0 20px rgba(0,212,255,0.5);
+  animation-duration: 22s;
+  --orbit-r: 120px;
+  --orbit-start: 0deg;
+}
+.node-2 {
+  background: #7b2fff;
+  box-shadow: 0 0 10px #7b2fff, 0 0 20px rgba(123,47,255,0.5);
+  animation-duration: 14s;
+  animation-direction: reverse;
+  --orbit-r: 85px;
+  --orbit-start: 90deg;
+  width: 8px; height: 8px;
+}
+.node-3 {
+  background: var(--neon);
+  box-shadow: 0 0 8px var(--neon);
+  animation-duration: 9s;
+  --orbit-r: 50px;
+  --orbit-start: 45deg;
+  width: 6px; height: 6px;
+}
+.node-4 {
+  background: rgba(0,212,255,0.6);
+  box-shadow: 0 0 6px var(--neon);
+  animation-duration: 18s;
+  animation-direction: reverse;
+  --orbit-r: 120px;
+  --orbit-start: 200deg;
+  width: 7px; height: 7px;
+}
+
+@keyframes node-orbit {
+  from { transform: translate(-50%, -50%) rotate(var(--orbit-start, 0deg)) translateX(var(--orbit-r, 80px)) rotate(calc(-1 * var(--orbit-start, 0deg))); }
+  to   { transform: translate(-50%, -50%) rotate(calc(var(--orbit-start, 0deg) + 360deg)) translateX(var(--orbit-r, 80px)) rotate(calc(-1 * (var(--orbit-start, 0deg) + 360deg))); }
+}
+
+/* ── Scan line ── */
+.deco-scan {
+  position: absolute;
+  left: 10%; right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0,212,255,0.7), transparent);
+  animation: scan-sweep 3.5s ease-in-out infinite;
+}
+
+@keyframes scan-sweep {
+  0%   { top: 10%;  opacity: 0; }
+  8%   { opacity: 1; }
+  92%  { opacity: 1; }
+  100% { top: 90%;  opacity: 0; }
+}
+
+/* ── Corner brackets ── */
+.deco-bracket {
+  position: absolute;
+  width: 20px; height: 20px;
+}
+
+.br-tl { top: 8px;  left: 8px;  border-top: 1.5px solid rgba(0,212,255,0.5); border-left: 1.5px solid rgba(0,212,255,0.5); }
+.br-tr { top: 8px;  right: 8px; border-top: 1.5px solid rgba(0,212,255,0.5); border-right: 1.5px solid rgba(0,212,255,0.5); }
+.br-bl { bottom: 8px; left: 8px;  border-bottom: 1.5px solid rgba(0,212,255,0.5); border-left: 1.5px solid rgba(0,212,255,0.5); }
+.br-br { bottom: 8px; right: 8px; border-bottom: 1.5px solid rgba(0,212,255,0.5); border-right: 1.5px solid rgba(0,212,255,0.5); }
+
+/* ── Data readout ── */
+.deco-readout {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 8px;
+}
+
+.readout-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  animation: readout-fade 2s ease-in-out infinite alternate;
+  animation-delay: calc(var(--ri) * 0.35s);
+}
+
+.readout-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--neon);
+  box-shadow: 0 0 5px var(--neon);
+  flex-shrink: 0;
+}
+
+.readout-text {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  color: rgba(0, 212, 255, 0.55);
+  font-family: 'Courier New', monospace;
+}
+
+@keyframes readout-fade {
+  from { opacity: 0.3; }
+  to   { opacity: 0.9; }
+}
+
+/* ── Floating particles ── */
+.deco-particle {
+  position: absolute;
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: var(--neon);
+  opacity: 0.5;
+  animation: particle-drift ease-in-out infinite alternate;
+  top:  calc(10% + var(--pi) * 11%);
+  left: calc(5%  + var(--pi) * 12%);
+  animation-duration: calc(2.5s + var(--pi) * 0.4s);
+  animation-delay: calc(var(--pi) * -0.6s);
+}
+
+@keyframes particle-drift {
+  from { transform: translate(0, 0);    opacity: 0.2; }
+  to   { transform: translate(6px, -10px); opacity: 0.7; }
+}
+
+/* Hide on narrow viewports */
+@media (max-width: 1200px) {
+  .cyber-deco { display: none; }
+}
