@@ -1,10 +1,22 @@
+import { Link, useLocation } from 'react-router-dom'
 import './Navbar.css'
 
+const links = [
+  { to: '/', label: 'Home' },
+  { to: '/screenshot', label: 'Screenshot' },
+  { to: '/url', label: 'URL' },
+  { to: '/email', label: 'Email' },
+  { to: '/qr', label: 'QR' },
+  { to: '/about', label: 'About' },
+]
+
 export default function Navbar() {
+  const location = useLocation()
+
   return (
     <nav className="navbar">
       <div className="navbar-inner">
-        <div className="navbar-brand">
+        <Link to="/" className="navbar-brand">
           <span className="brand-icon">
             <svg width="16" height="18" viewBox="0 0 16 18" fill="none">
               <path d="M8 1L1.5 3.5V9c0 4 2.8 7.5 6.5 8.5C11.7 16.5 14.5 13 14.5 9V3.5L8 1z"
@@ -14,13 +26,12 @@ export default function Navbar() {
             </svg>
           </span>
           <span className="brand-name">SentinelAI</span>
-        </div>
+        </Link>
 
         <ul className="navbar-links">
-          <li><a href="#" className="nav-link active">Home</a></li>
-          <li><a href="#" className="nav-link">Features</a></li>
-          <li><a href="#" className="nav-link">About</a></li>
-          <li><a href="#" className="nav-link">Contact</a></li>
+          {links.map((link) => (
+            <li key={link.to}><Link to={link.to} className={`nav-link${location.pathname === link.to ? ' active' : ''}`}>{link.label}</Link></li>
+          ))}
         </ul>
 
         <div className="navbar-right">
@@ -28,7 +39,7 @@ export default function Navbar() {
             <span className="status-dot" />
             Protected
           </span>
-          <button className="nav-cta">Get Started</button>
+          <Link to="/assistant" className="nav-cta">Get Started</Link>
         </div>
       </div>
     </nav>

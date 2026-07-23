@@ -1,18 +1,17 @@
 import { useState, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import './UploadSection.css'
 
 export default function UploadSection() {
-  const [preview, setPreview]   = useState(null)
+  const navigate = useNavigate()
+  const [preview, setPreview] = useState(null)
   const [dragging, setDragging] = useState(false)
-  const [result, setResult]     = useState(null)
-  const [loading, setLoading]   = useState(false)
-  const [url, setUrl]           = useState('')
+  const [url, setUrl] = useState('')
   const inputRef = useRef()
 
   function handleFile(file) {
     if (!file || !file.type.startsWith('image/')) return
     setPreview(URL.createObjectURL(file))
-    setResult(null)
   }
 
   function onInputChange(e) { handleFile(e.target.files[0]) }
@@ -24,18 +23,20 @@ export default function UploadSection() {
   function onDragOver(e)  { e.preventDefault(); setDragging(true) }
   function onDragLeave()  { setDragging(false) }
 
-  async function handleScan() {
-    if (!preview && !url.trim()) return
-    setLoading(true)
-    await new Promise(r => setTimeout(r, 1800))
-    setResult({ safe: false, confidence: 94, label: 'Phishing Detected' })
-    setLoading(false)
+  function handleScan() {
+    if (url.trim()) {
+      navigate('/url', { state: { prefill: url.trim() } })
+    } else if (preview) {
+      navigate('/screenshot')
+    }
   }
 
   function handleClear() {
-    setPreview(null); setResult(null)
+    setPreview(null)
     if (inputRef.current) inputRef.current.value = ''
   }
+
+  const canScan = !!preview || !!url.trim()
 
   return (
     <div className="upload-section">
@@ -107,24 +108,13 @@ export default function UploadSection() {
         </div>
       </div>
 
-      {/* ── Result banner ── */}
-      {result && (
-        <div className={`result-banner ${result.safe ? 'safe' : 'danger'}`}>
-          <span className="result-icon">{result.safe ? '✅' : '⚠️'}</span>
-          <span className="result-label">{result.label}</span>
-          <span className="result-confidence">{result.confidence}% confidence</span>
-        </div>
-      )}
-
       {/* ── Scan button ── */}
       <button
         className="btn-scan"
         onClick={handleScan}
-        disabled={(!preview && !url.trim()) || loading}
+        disabled={!canScan}
       >
-        {loading
-          ? <><span className="btn-spinner" /> Analyzing…</>
-          : <><span className="scan-icon">⚡</span> Scan for Threats</>}
+        <span className="scan-icon">⚡</span> Scan for Threats
       </button>
 
     </div>
