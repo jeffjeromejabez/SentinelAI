@@ -2,7 +2,7 @@ const STEPS = [
   {
     num: '01',
     title: 'Upload Input',
-    desc: 'Submit URL, email text, screenshot, or QR image.',
+    desc: 'Submit URL, email text, screenshot, or chat conversation.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -14,7 +14,7 @@ const STEPS = [
   {
     num: '02',
     title: 'Feature Extraction',
-    desc: 'Deterministic parsing of TLDs, headers & barcode matrix.',
+    desc: 'Deterministic parsing of TLDs, headers & social engineering cues.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <polyline points="16 18 22 12 16 6"/>

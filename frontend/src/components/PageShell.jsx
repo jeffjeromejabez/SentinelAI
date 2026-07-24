@@ -6,7 +6,7 @@ const navItems = [
   { to: '/screenshot', label: 'Screenshot' },
   { to: '/url', label: 'URL' },
   { to: '/email', label: 'Email' },
-  { to: '/qr', label: 'QR' },
+  { to: '/conversation', label: 'Conversation' },
   { to: '/assistant', label: 'Assistant' },
   { to: '/history', label: 'History' },
 ]

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import PageShell from '../components/PageShell'
+import ThreatMeter from '../components/ThreatMeter'
 import { saveScanResult } from '../lib/history'
 
 export default function URLScanner() {
@@ -8,6 +9,8 @@ export default function URLScanner() {
   const location = useLocation()
   const [url, setUrl] = useState(location.state?.prefill || '')
   const [loading, setLoading] = useState(false)
+  const [targetScore, setTargetScore] = useState(null)
+  const [pendingPayload, setPendingPayload] = useState(null)
   const [error, setError] = useState('')
 
   async function handleScan() {
@@ -16,6 +19,8 @@ export default function URLScanner() {
       return
     }
     setLoading(true)
+    setTargetScore(null)
+    setPendingPayload(null)
     setError('')
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/scan/url`, {
@@ -41,30 +46,47 @@ export default function URLScanner() {
         scanTimestamp: payload.scanTimestamp,
         summary: payload.summary,
       })
-      navigate('/result', { state: payload })
+      
+      setPendingPayload(payload)
+      setTargetScore(payload.threatScore)
+
     } catch (scanError) {
       setError(scanError.message || 'Unable to scan the provided URL.')
-    } finally {
       setLoading(false)
     }
+  }
+
+  function handleMeterComplete() {
+    if (pendingPayload) {
+      navigate('/result', { state: pendingPayload })
+    }
+    setLoading(false)
   }
 
   return (
     <PageShell title="URL Scanner" subtitle="Validate a link before you click and review the threat assessment in a structured report.">
       <div className="page-grid">
         <div className="page-panel">
-          <div className="scan-form">
-            <input className="form-input" type="url" value={url} placeholder="https://example.com" onChange={(event) => setUrl(event.target.value)} />
-            <div className="inline-actions">
-              <button className="btn-primary" onClick={handleScan} disabled={loading || !url.trim()}>
-                {loading ? 'Scanning…' : 'Scan URL'}
-              </button>
-              <button className="btn-secondary" onClick={() => { setUrl(''); setError('') }}>
-                Clear
-              </button>
+          {loading ? (
+            <ThreatMeter
+              active={loading}
+              targetScore={targetScore}
+              onComplete={handleMeterComplete}
+            />
+          ) : (
+            <div className="scan-form">
+              <input className="form-input" type="url" value={url} placeholder="https://example.com" onChange={(event) => setUrl(event.target.value)} />
+              <div className="inline-actions">
+                <button className="btn-primary" onClick={handleScan} disabled={loading || !url.trim()}>
+                  Scan URL
+                </button>
+                <button className="btn-secondary" onClick={() => { setUrl(''); setError('') }}>
+                  Clear
+                </button>
+              </div>
+              {error ? <div className="alert error">{error}</div> : null}
             </div>
-            {error ? <div className="alert error">{error}</div> : null}
-          </div>
+          )}
         </div>
         <div className="page-panel">
           <h3>Heuristics used</h3>

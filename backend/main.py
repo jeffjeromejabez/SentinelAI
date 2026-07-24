@@ -40,7 +40,7 @@ load_local_env()
 
 from url_extractor import extract_url_features
 from email_extractor import extract_email_features
-from qr_extractor import decode_qr_image
+from conversation_extractor import extract_conversation_features
 from screenshot_extractor import extract_screenshot_features
 from gemini_client import generate_json_response, get_gemini_key, get_groq_key
 
@@ -91,10 +91,15 @@ class EmailPayload(BaseModel):
             raise ValueError("Email content must not be empty")
         return v[:20000]
 
-class QRPayload(BaseModel):
-    image_name: str = Field(default="qr.png")
-    image_data: Optional[str] = None
-    mime_type:  Optional[str] = Field(default="image/png")
+class ConversationPayload(BaseModel):
+    text: str
+    @field_validator("text")
+    @classmethod
+    def validate_text(cls, v: str) -> str:
+        v = v.strip()
+        if not v:
+            raise ValueError("Conversation content must not be empty")
+        return v[:30000]
 
 class ChatMessage(BaseModel):
     role: str
@@ -160,6 +165,33 @@ Analyze this screenshot / visual image for cybersecurity risks:
 - Inspect all visible text, address bar URLs, domain names, SSL certificate lock icons, form inputs, password fields, brand logos, and alert banners.
 - Determine if this image depicts a fake login page, credential harvesting attempt, brand impersonation spoof, malware lure, or legitimate website.
 - Respond with ONLY valid JSON according to the SCAN_SYSTEM_PROMPT schema."""
+
+CONVERSATION_SYSTEM_PROMPT = """You are SentinelAI, an elite cybersecurity scam & social engineering threat analysis engine.
+
+Analyze this complete chat/messaging conversation log (copied from WhatsApp, Telegram, Instagram, SMS, Discord, Email, or Messenger) for scam, fraud, and phishing behavior.
+
+EVALUATION CRITERIA:
+- Social engineering tactics: fear, extreme urgency, artificial scarcity, emotional manipulation, trust building, secrecy demands.
+- Impersonation: Police, Customs, Government officials, Bank managers, Tech Support, Customer Care, Delivery couriers.
+- Fraud Schemes:
+  • Prize/Lottery scams (KBC, lucky draw fees)
+  • Bank & UPI scams (collect requests, fake payment screenshots, verification links)
+  • Identity theft & Credential harvesting (OTP, PIN, Password, Aadhaar, PAN, CVV requests)
+  • Investment & Crypto schemes (guaranteed 500% profit, Telegram trading task)
+  • Job/Internship scams (data entry registration fee, task app deposit)
+  • Romance scams (online partner requesting urgent financial assistance)
+  • Tech Support & Refund scams (overpayment refund via AnyDesk/TeamViewer remote access)
+  • Courier & Customs extortion (parcel stuck with contraband, instant penalty)
+  • Loan & Marketplace scams (advance booking fee, loan processing fee)
+
+CALIBRATED THREAT SCORING:
+- 0 to 20 (Safe): Normal, friendly, or authentic business/personal conversation with zero fraud indicators.
+- 21 to 40 (Low): Minor unverified claims or informal chat without sensitive requests.
+- 41 to 60 (Medium): Unverified offers, suspicious links, unknown sender asking for non-sensitive info, mild pressure.
+- 61 to 80 (High): Clear scam indicators (unverified payment requests, UPI IDs, fee demands, urgency, remote control app installation).
+- 81 to 100 (Critical): Active credential theft (OTP/PIN/CVV/Password requests), law enforcement extortion, fake arrest threats, direct fraud.
+
+Respond with ONLY valid JSON according to the SCAN_SYSTEM_PROMPT schema."""
 
 
 # ── JSON Extractor Helper ──────────────────────────────────────────────────────
@@ -409,62 +441,54 @@ EVALUATION INSTRUCTIONS:
     return result
 
 
-@app.post("/scan/qr", response_model=ScanResponse)
-def scan_qr(payload: QRPayload):
-    image_name = payload.image_name
-    log.info("QR scan request: %s", image_name)
-    image_data, mime = validate_image_payload(payload.image_data, payload.mime_type)
+@app.post("/scan/conversation", response_model=ScanResponse)
+def scan_conversation(payload: ConversationPayload):
+    text = payload.text
+    log.info("Conversation scan request (%d chars)", len(text))
 
-    # 1. Deterministically decode QR matrix
-    qr_features = decode_qr_image(image_data)
+    # 1. Extract deterministic heuristics
+    features = extract_conversation_features(text)
 
-    if qr_features["success"]:
-        decoded_text = qr_features['decoded_text']
-        log.info("QR decoded successfully via %s: %s", qr_features['decoder_used'], decoded_text)
-        
-        url_info = qr_features.get("url_analysis") or {}
+    # 2. Formulate evidence-based prompt
+    prompt = f"""Perform cybersecurity scam & social engineering threat analysis on this conversation log:
 
-        prompt = f"""A QR code image named '{image_name}' was decoded by our barcode engine:
+--- START CONVERSATION LOG ---
+{text[:12000]}
+--- END CONVERSATION LOG ---
 
-DECODED QR PAYLOAD DETAILS:
-- Decoded Payload Type: {qr_features['payload_type'].upper()}
-- Decoded Target URL/Text: {decoded_text}
-- Decoder Engine Used: {qr_features['decoder_used']}
-
-TECHNICAL SECURITY SIGNALS DETECTED:
-- Insecure HTTP Protocol: {url_info.get('scheme') == 'http'}
-- Domain: {url_info.get('domain', 'N/A')} (TLD: .{url_info.get('tld', '')})
-- Suspicious Abuse TLD Flag: {url_info.get('is_suspicious_tld', False)}
-- Host is Raw IP Address: {url_info.get('is_ip_address', False)}
-- Shortened URL Flag: {url_info.get('is_url_shortener', False)}
-- Phishing Keywords Found: {url_info.get('keywords_found', [])}
-- Impersonated Brands Target: {url_info.get('impersonated_brands', [])}
-- Typosquatting Indicators: {url_info.get('typosquatting_indicators', [])}
-- Heuristic Security Signals: {qr_features['heuristic_signals']}
-- Baseline Threat Score: {qr_features['heuristic_threat_score']} / 100
+DETERMINISTIC EXTRACTED SECURITY SIGNALS:
+- Messages Count: {features['messages']} | Length: {features['conversation_length']} chars
+- Phone Numbers Found: {features['phone_list']}
+- Email Addresses Found: {features['emails']}
+- UPI Payment Identifiers: {features['upi_list']}
+- Bank Account Mentions: {features['bank_account_mentions']}
+- Sensitive Requests: OTP ({features['otp_mentions']}), PIN ({features['pin_mentions']}), Password ({features['password_mentions']})
+- Personal Data Requests: ID Proof ({features['requests_id_proof']}), Aadhaar ({features['requests_aadhaar']}), PAN ({features['requests_pan']}), Card/CVV ({features['requests_cvv']})
+- Remote Access Tools Requested: AnyDesk/TeamViewer ({features['requests_screen_sharing']})
+- Impersonation Flags: Authority ({features['authority']}), Police ({features['police_impersonation']}), Bank ({features['bank_impersonation']}), Support ({features['support_impersonation']})
+- Psychological Tactics: Urgency ({features['urgency']}), Fear ({features['fear']}), Threats ({features['threats']})
+- Financial Scheme Indicators: Crypto ({features['crypto']}), Investment ({features['investment']}), Lottery ({features['lottery_words']}), Refund ({features['refund']})
+- Links Found: Total ({features['links']}), Shortened ({features['shortened_urls']}), Suspicious Domains ({features['suspicious_domains']})
+- Total Suspicious Indicators: {features['total_suspicious_indicators']}
+- Heuristic Security Signals: {features['heuristic_signals']}
+- Baseline Heuristic Threat Score: {features['heuristic_threat_score']} / 100
 
 EVALUATION INSTRUCTIONS:
-1. Evaluate the decoded QR destination payload using the technical security signals above.
-2. If the payload is a URL on a suspicious TLD (.tk, .xyz) or impersonates a brand (PayPal, Microsoft, Google) on an unofficial domain, assign a HIGH or CRITICAL threat score (75 to 100).
-3. If the payload is a verified official domain (e.g. google.com), assign a SAFE threat score (0 to 15).
-4. Your explanation MUST explicitly state the decoded payload text '{decoded_text}' and cite the technical evidence (TLD, brand impersonation, protocol)."""
+1. Synthesize the extracted signals with the conversation text to identify scam and fraud behavior.
+2. Determine threat_score based on concrete evidence:
+   - Safe, normal chat with zero fraud indicators -> score 0-15.
+   - Active scam attempt (OTP theft, authority extortion, UPI fee trap, fake investment, remote access) -> score 75-100.
+3. Explanation MUST quote or reference specific text lines, phone/UPI details, or pressure tactics found."""
 
-        raw_response = generate_json_response(prompt=prompt, system_instruction=SCAN_SYSTEM_PROMPT)
-    else:
-        log.info("QR local decode returned no matrix. Using multimodal vision API...")
-        prompt = f"""Analyze this QR code image named '{image_name}' for cybersecurity risks.
-Describe what the image depicts (e.g. poster, payment sign, sticker) and evaluate any visible text or destination URLs for phishing risks."""
-        raw_response = generate_json_response(prompt=prompt, system_instruction=VISION_SCAN_PROMPT, image_b64=image_data, mime_type=mime)
-
-    data = parse_scan(raw_response, "qr", fallback_score=qr_features.get('heuristic_threat_score', 15))
+    raw_response = generate_json_response(prompt=prompt, system_instruction=CONVERSATION_SYSTEM_PROMPT)
+    data = parse_scan(raw_response, "conversation", fallback_score=features['heuristic_threat_score'])
 
     result = build_result(
-        scan_type="qr",
+        scan_type="conversation",
         details={
-            "imageName": image_name,
-            "decodedPayload": qr_features.get("decoded_text"),
-            "payloadType": qr_features.get("payload_type"),
-            "extractedFeatures": qr_features
+            "conversationPreview": text[:200],
+            "conversationLength": len(text),
+            "extractedFeatures": features
         },
         **data
     )

@@ -2,7 +2,7 @@ import PageShell from '../components/PageShell'
 
 export default function About() {
   return (
-    <PageShell title="About SentinelAI" subtitle="A practical AI security platform that helps users review suspicious content across screenshots, URLs, emails, and QR codes.">
+    <PageShell title="About SentinelAI" subtitle="A practical AI security platform that helps users review suspicious content across screenshots, URLs, emails, and chat conversations.">
       <div className="page-grid">
         <div className="page-panel">
           <h3>What it does</h3>

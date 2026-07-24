@@ -53,7 +53,15 @@ r = requests.post(f"{BASE}/scan/screenshot",
     timeout=120)
 check("Screenshot - Safe (nature photo)", r, 0, 30, "Safe")
 
-# 6. Screenshot without an uploaded image must be rejected.
+# 6. Safe Conversation
+r = requests.post(f"{BASE}/scan/conversation", json={"text": "Hey Rahul, let's meet for lunch at 1 PM today near the office. See you there!"}, timeout=60)
+check("Conversation - Safe (lunch meeting)", r, 0, 30, "Safe")
+
+# 7. Scam Conversation (Bank OTP)
+r = requests.post(f"{BASE}/scan/conversation", json={"text": "URGENT: Your SBI bank account 4982 is blocked due to pending KYC. Share 6-digit OTP immediately to avoid deactivation!"}, timeout=60)
+check("Conversation - Critical (Bank OTP Scam)", r, 75, 100, "Critical")
+
+# 8. Screenshot without an uploaded image must be rejected.
 r = requests.post(f"{BASE}/scan/screenshot",
     json={"image_name": "paypal-verify-account-login.png", "image_data": None, "mime_type": "image/png"},
     timeout=60)

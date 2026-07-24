@@ -1,12 +1,15 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PageShell from '../components/PageShell'
+import ThreatMeter from '../components/ThreatMeter'
 import { saveScanResult } from '../lib/history'
 
 export default function EmailScanner() {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
+  const [targetScore, setTargetScore] = useState(null)
+  const [pendingPayload, setPendingPayload] = useState(null)
   const [error, setError] = useState('')
 
   async function handleScan() {
@@ -15,6 +18,8 @@ export default function EmailScanner() {
       return
     }
     setLoading(true)
+    setTargetScore(null)
+    setPendingPayload(null)
     setError('')
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/scan/email`, {
@@ -40,30 +45,47 @@ export default function EmailScanner() {
         scanTimestamp: payload.scanTimestamp,
         summary: payload.summary,
       })
-      navigate('/result', { state: payload })
+      
+      setPendingPayload(payload)
+      setTargetScore(payload.threatScore)
+
     } catch (scanError) {
       setError(scanError.message || 'Unable to analyze the email right now.')
-    } finally {
       setLoading(false)
     }
+  }
+
+  function handleMeterComplete() {
+    if (pendingPayload) {
+      navigate('/result', { state: pendingPayload })
+    }
+    setLoading(false)
   }
 
   return (
     <PageShell title="Email Scanner" subtitle="Paste a suspicious message and SentinelAI will surface impersonation, phishing, and urgency indicators.">
       <div className="page-grid">
         <div className="page-panel">
-          <div className="scan-form">
-            <textarea className="form-textarea" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Paste email content here..." />
-            <div className="inline-actions">
-              <button className="btn-primary" onClick={handleScan} disabled={loading || !email.trim()}>
-                {loading ? 'Analyzing…' : 'Analyze Email'}
-              </button>
-              <button className="btn-secondary" onClick={() => { setEmail(''); setError('') }}>
-                Clear
-              </button>
+          {loading ? (
+            <ThreatMeter
+              active={loading}
+              targetScore={targetScore}
+              onComplete={handleMeterComplete}
+            />
+          ) : (
+            <div className="scan-form">
+              <textarea className="form-textarea" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Paste email content here..." />
+              <div className="inline-actions">
+                <button className="btn-primary" onClick={handleScan} disabled={loading || !email.trim()}>
+                  Analyze Email
+                </button>
+                <button className="btn-secondary" onClick={() => { setEmail(''); setError('') }}>
+                  Clear
+                </button>
+              </div>
+              {error ? <div className="alert error">{error}</div> : null}
             </div>
-            {error ? <div className="alert error">{error}</div> : null}
-          </div>
+          )}
         </div>
         <div className="page-panel">
           <h3>Signals reviewed</h3>

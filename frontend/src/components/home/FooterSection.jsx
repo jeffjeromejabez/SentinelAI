@@ -12,7 +12,7 @@ export default function FooterSection() {
             <span>SentinelAI</span>
           </div>
           <p className="footer-brand-desc">
-            AI-powered cyber threat intelligence engine detecting phishing, scam emails, visual impersonation, and malicious QR codes in real-time.
+            AI-powered cyber threat intelligence engine detecting phishing, scam emails, visual impersonation, and scam chat conversations in real-time.
           </p>
         </div>
 
@@ -22,7 +22,7 @@ export default function FooterSection() {
             <li><Link to="/screenshot" className="footer-link">Screenshot Scanner</Link></li>
             <li><Link to="/url" className="footer-link">URL Scanner</Link></li>
             <li><Link to="/email" className="footer-link">Email Scanner</Link></li>
-            <li><Link to="/qr" className="footer-link">QR Code Scanner</Link></li>
+            <li><Link to="/conversation" className="footer-link">Scam Conversation Analyzer</Link></li>
           </ul>
         </div>
 

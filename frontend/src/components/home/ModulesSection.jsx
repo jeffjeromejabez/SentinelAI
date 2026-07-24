@@ -45,18 +45,17 @@ const MODULES = [
     ),
   },
   {
-    path: '/qr',
-    title: 'QR Code Scanner',
-    tag: 'BARCODE DECODER',
-    desc: 'Decode QR code matrices deterministically to inspect destination links, Wi-Fi configs, and payment triggers before opening.',
+    path: '/conversation',
+    title: 'Scam Conversation Analyzer',
+    tag: 'CHAT & SOCIAL ENGINEERING',
+    desc: 'Analyze chat logs from WhatsApp, Telegram, Instagram, SMS, and Discord for social engineering, urgency, and fraud tactics.',
     color: '#00e5a0',
     glow: 'rgba(0, 229, 160, 0.35)',
     icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <rect x="3" y="3" width="7" height="7"/>
-        <rect x="14" y="3" width="7" height="7"/>
-        <rect x="14" y="14" width="7" height="7"/>
-        <rect x="3" y="14" width="7" height="7"/>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        <path d="M12 7v4"/>
+        <path d="M12 15h.01"/>
       </svg>
     ),
   },

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PageShell from '../components/PageShell'
+import ThreatMeter from '../components/ThreatMeter'
 import { saveScanResult } from '../lib/history'
 
 export default function ScreenshotScanner() {
@@ -8,6 +9,8 @@ export default function ScreenshotScanner() {
   const [file, setFile] = useState(null)
   const [preview, setPreview] = useState('')
   const [loading, setLoading] = useState(false)
+  const [targetScore, setTargetScore] = useState(null)
+  const [pendingPayload, setPendingPayload] = useState(null)
   const [error, setError] = useState('')
 
   const acceptedTypes = useMemo(() => ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'], [])
@@ -47,6 +50,8 @@ export default function ScreenshotScanner() {
       return
     }
     setLoading(true)
+    setTargetScore(null)
+    setPendingPayload(null)
     setError('')
     try {
       const imagePayload = await readFileAsBase64(file)
@@ -73,33 +78,50 @@ export default function ScreenshotScanner() {
         scanTimestamp: payload.scanTimestamp,
         summary: payload.summary,
       })
-      navigate('/result', { state: payload })
+      
+      setPendingPayload(payload)
+      setTargetScore(payload.threatScore)
+
     } catch (scanError) {
       setError(scanError.message || 'Unable to scan the screenshot right now.')
-    } finally {
       setLoading(false)
     }
+  }
+
+  function handleMeterComplete() {
+    if (pendingPayload) {
+      navigate('/result', { state: pendingPayload })
+    }
+    setLoading(false)
   }
 
   return (
     <PageShell title="Screenshot Scanner" subtitle="Upload a screenshot and let SentinelAI assess it for phishing cues and visual impersonation patterns.">
       <div className="page-grid">
         <div className="page-panel">
-          <div className="scan-form">
-            <label className="upload-zone has-preview" htmlFor="screenshot-file" style={{ cursor: 'pointer', padding: '16px' }}>
-              {preview ? <img src={preview} alt="Uploaded preview" className="preview-image" /> : <div className="upload-placeholder"><p className="upload-main-text">Choose a screenshot to analyze</p><p className="upload-sub-text">PNG, JPG, JPEG, WEBP</p></div>}
-            </label>
-            <input id="screenshot-file" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp" onChange={(event) => handleFileSelection(event.target.files?.[0])} hidden />
-            <div className="inline-actions">
-              <button className="btn-primary" onClick={handleScan} disabled={loading || !file}>
-                {loading ? 'Analyzing…' : 'Scan Screenshot'}
-              </button>
-              <button className="btn-secondary" onClick={() => { setFile(null); setPreview(''); setError('') }}>
-                Clear
-              </button>
+          {loading ? (
+            <ThreatMeter
+              active={loading}
+              targetScore={targetScore}
+              onComplete={handleMeterComplete}
+            />
+          ) : (
+            <div className="scan-form">
+              <label className="upload-zone has-preview" htmlFor="screenshot-file" style={{ cursor: 'pointer', padding: '16px' }}>
+                {preview ? <img src={preview} alt="Uploaded preview" className="preview-image" /> : <div className="upload-placeholder"><p className="upload-main-text">Choose a screenshot to analyze</p><p className="upload-sub-text">PNG, JPG, JPEG, WEBP</p></div>}
+              </label>
+              <input id="screenshot-file" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp" onChange={(event) => handleFileSelection(event.target.files?.[0])} hidden />
+              <div className="inline-actions">
+                <button className="btn-primary" onClick={handleScan} disabled={loading || !file}>
+                  Scan Screenshot
+                </button>
+                <button className="btn-secondary" onClick={() => { setFile(null); setPreview(''); setError('') }}>
+                  Clear
+                </button>
+              </div>
+              {error ? <div className="alert error">{error}</div> : null}
             </div>
-            {error ? <div className="alert error">{error}</div> : null}
-          </div>
+          )}
         </div>
 
         <div className="page-panel">

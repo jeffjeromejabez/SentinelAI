@@ -54,7 +54,7 @@ export default function CyberDashboardSection() {
               </div>
               <div className="bar-item">
                 <div className="bar-info">
-                  <span>QR Barcode Exploits</span>
+                  <span>Chat & Messaging Exploits</span>
                   <span>13%</span>
                 </div>
                 <div className="bar-track">

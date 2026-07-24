@@ -6,7 +6,7 @@ export default function CtaSection() {
       <div className="cta-banner">
         <h2 className="cta-title">Start Protecting Yourself Today</h2>
         <p className="cta-desc">
-          Inspect any suspicious web link, email message, login screenshot, or QR code before it compromises your security.
+          Inspect any suspicious web link, email message, login screenshot, or chat conversation before it compromises your security.
         </p>
         <Link to="/url" className="btn-hero-primary">
           <span>Launch Scanner</span>

@@ -12,8 +12,8 @@ import cv2
 import numpy as np
 from PIL import Image, ImageDraw
 
-from main import scan_url, scan_email, scan_qr, scan_screenshot, chat
-from main import URLPayload, EmailPayload, QRPayload, ScreenshotPayload, ChatPayload
+from main import scan_url, scan_email, scan_conversation, scan_screenshot, chat
+from main import URLPayload, EmailPayload, ConversationPayload, ScreenshotPayload, ChatPayload
 
 logging.basicConfig(level=logging.INFO)
 
@@ -94,18 +94,16 @@ Click here to confirm: http://paypal-verify-credentials.tk/login"""
     results.append(("5. Urgent Phishing Email", res5.threatScore, res5.riskLevel, res5.explanation[:70] + "..."))
     time.sleep(2)
 
-    # Test 6: Safe QR Scan Payload
-    print("Executing Test 6: Safe QR Code (Google)...")
-    safe_qr_b64 = generate_qr_b64("https://www.google.com")
-    res6 = scan_qr(QRPayload(image_name="official_google_homepage_qr.png", image_data=safe_qr_b64, mime_type="image/png"))
-    results.append(("6. Safe QR Code Image", res6.threatScore, res6.riskLevel, res6.explanation[:70] + "..."))
+    # Test 6: Safe Conversation
+    print("Executing Test 6: Safe Conversation (Lunch chat)...")
+    res6 = scan_conversation(ConversationPayload(text="[10:14 AM] Rahul: Hey Alex, lunch at 1 PM today?\n[10:15 AM] Alex: Sounds good, see you at the cafe!"))
+    results.append(("6. Safe Conversation", res6.threatScore, res6.riskLevel, res6.explanation[:70] + "..."))
     time.sleep(2)
 
-    # Test 7: Malicious QR Scan Payload
-    print("Executing Test 7: Malicious QR Code (PayPal Phish)...")
-    malicious_qr_b64 = generate_qr_b64("http://paypal-security-verify.login.tk/account")
-    res7 = scan_qr(QRPayload(image_name="malicious_paypal_login_phishing_qr.png", image_data=malicious_qr_b64, mime_type="image/png"))
-    results.append(("7. Malicious QR Code Image", res7.threatScore, res7.riskLevel, res7.explanation[:70] + "..."))
+    # Test 7: Malicious Scam Conversation (Bank OTP)
+    print("Executing Test 7: Malicious Scam Conversation (Bank OTP Theft)...")
+    res7 = scan_conversation(ConversationPayload(text="[02:30 PM] SBI Customer Care: URGENT: Account 4982 is blocked. Share 6-digit OTP right now or account will be permanently closed in 10 mins!"))
+    results.append(("7. Malicious Scam Conversation", res7.threatScore, res7.riskLevel, res7.explanation[:70] + "..."))
     time.sleep(2)
 
     # Test 8: Safe Screenshot

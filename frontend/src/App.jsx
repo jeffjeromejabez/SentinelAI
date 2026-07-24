@@ -3,7 +3,7 @@ import Home from './pages/Home'
 import ScreenshotScanner from './pages/ScreenshotScanner'
 import URLScanner from './pages/URLScanner'
 import EmailScanner from './pages/EmailScanner'
-import QRScanner from './pages/QRScanner'
+import ConversationScanner from './pages/ConversationScanner'
 import History from './pages/History'
 import AIAssistant from './pages/AIAssistant'
 import Result from './pages/Result'
@@ -16,7 +16,7 @@ export default function App() {
       <Route path="/screenshot" element={<ScreenshotScanner />} />
       <Route path="/url" element={<URLScanner />} />
       <Route path="/email" element={<EmailScanner />} />
-      <Route path="/qr" element={<QRScanner />} />
+      <Route path="/conversation" element={<ConversationScanner />} />
       <Route path="/history" element={<History />} />
       <Route path="/assistant" element={<AIAssistant />} />
       <Route path="/result" element={<Result />} />
