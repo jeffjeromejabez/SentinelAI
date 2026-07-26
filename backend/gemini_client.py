@@ -70,7 +70,12 @@ def _call_gemini(prompt: str, system_instruction: str = "", image_b64: str = Non
         }
 
     t0 = time.time()
-    resp = requests.post(url, json=payload, timeout=90)
+    try:
+        resp = requests.post(url, json=payload, timeout=25)
+    except requests.exceptions.RequestException as err:
+        log.error("Gemini connection error: %s", err)
+        raise RuntimeError(f"Gemini API network/SSL failure: {err}") from err
+
     ms = round((time.time() - t0) * 1000)
 
     if resp.status_code != 200:
@@ -89,7 +94,7 @@ def _call_gemini(prompt: str, system_instruction: str = "", image_b64: str = Non
 
 
 def _call_groq(prompt: str, system_instruction: str = "", image_b64: str = None, mime_type: str = "image/png", temperature: float = 0.1) -> str:
-    """Fallback request against Groq API with 429 retry and text fallback."""
+    """Fallback request against Groq API with 429 retry and network error handling."""
     groq_key = get_groq_key()
     if not groq_key:
         raise ValueError("Neither GEMINI_API_KEY nor GROQ_API_KEY is configured")
@@ -106,23 +111,25 @@ def _call_groq(prompt: str, system_instruction: str = "", image_b64: str = None,
         
         vision_model = get_groq_vision_model()
         t0 = time.time()
-        resp = requests.post(
-            GROQ_URL,
-            json={
-                "model": vision_model,
-                "messages": vision_messages,
-                "temperature": temperature,
-                "max_tokens": 2000
-            },
-            headers={"Authorization": f"Bearer {groq_key}"},
-            timeout=90
-        )
-        if resp.status_code == 200:
-            ms = round((time.time() - t0) * 1000)
-            log.info("Groq Vision OK | model=%s latency=%dms", vision_model, ms)
-            return resp.json()["choices"][0]["message"]["content"].strip()
-        
-        log.warning("Groq Vision failed (%s). Falling back to text model analysis...", resp.status_code)
+        try:
+            resp = requests.post(
+                GROQ_URL,
+                json={
+                    "model": vision_model,
+                    "messages": vision_messages,
+                    "temperature": temperature,
+                    "max_tokens": 2000
+                },
+                headers={"Authorization": f"Bearer {groq_key}"},
+                timeout=25
+            )
+            if resp.status_code == 200:
+                ms = round((time.time() - t0) * 1000)
+                log.info("Groq Vision OK | model=%s latency=%dms", vision_model, ms)
+                return resp.json()["choices"][0]["message"]["content"].strip()
+            log.warning("Groq Vision returned HTTP %s. Falling back to text model...", resp.status_code)
+        except requests.exceptions.RequestException as err:
+            log.warning("Groq Vision network/SSL exception: %s. Falling back...", err)
 
     # Text model fallback path
     messages = []
@@ -131,19 +138,25 @@ def _call_groq(prompt: str, system_instruction: str = "", image_b64: str = None,
     messages.append({"role": "user", "content": prompt})
 
     for model in [get_groq_text_model(), "llama-3.1-8b-instant"]:
-        for attempt in range(3):
+        for attempt in range(2):
             t0 = time.time()
-            resp = requests.post(
-                GROQ_URL,
-                json={
-                    "model": model,
-                    "messages": messages,
-                    "temperature": temperature,
-                    "max_tokens": 2000
-                },
-                headers={"Authorization": f"Bearer {groq_key}"},
-                timeout=90
-            )
+            try:
+                resp = requests.post(
+                    GROQ_URL,
+                    json={
+                        "model": model,
+                        "messages": messages,
+                        "temperature": temperature,
+                        "max_tokens": 2000
+                    },
+                    headers={"Authorization": f"Bearer {groq_key}"},
+                    timeout=25
+                )
+            except requests.exceptions.RequestException as err:
+                log.error("Groq connection exception for model %s (attempt %d): %s", model, attempt + 1, err)
+                time.sleep(1)
+                continue
+
             ms = round((time.time() - t0) * 1000)
 
             if resp.status_code == 200:
@@ -152,18 +165,18 @@ def _call_groq(prompt: str, system_instruction: str = "", image_b64: str = None,
                 return content
 
             if resp.status_code == 429:
-                log.warning("Groq 429 Rate Limit for model %s (attempt %d/3). Waiting 3 seconds...", model, attempt + 1)
-                time.sleep(3)
+                log.warning("Groq 429 Rate Limit for model %s (attempt %d/2). Waiting 2 seconds...", model, attempt + 1)
+                time.sleep(2)
                 continue
 
             log.error("Groq API Error %s: %s", resp.status_code, resp.text[:400])
             break
 
-    raise RuntimeError("AI service rate limit reached or temporarily unavailable. Please retry.")
+    raise RuntimeError("AI service is currently unreachable or timed out. Falling back to rule-based engine.")
 
 
 def generate_json_response(prompt: str, system_instruction: str = "", image_b64: str = None, mime_type: str = "image/png", temperature: float = 0.1) -> str:
-    """Generate structured JSON output from Gemini (or Groq fallback)."""
+    """Generate structured JSON output from Gemini (or Groq fallback), safely catching network errors."""
     gemini_key = get_gemini_key()
     groq_key = get_groq_key()
 
@@ -172,11 +185,13 @@ def generate_json_response(prompt: str, system_instruction: str = "", image_b64:
             return _call_gemini(prompt, system_instruction, image_b64, mime_type, temperature)
         except Exception as exc:
             log.warning("Gemini API call failed (%s). Attempting Groq fallback if configured...", exc)
-            if groq_key:
-                return _call_groq(prompt, system_instruction, image_b64, mime_type, temperature)
-            raise
 
     if groq_key:
-        return _call_groq(prompt, system_instruction, image_b64, mime_type, temperature)
+        try:
+            return _call_groq(prompt, system_instruction, image_b64, mime_type, temperature)
+        except Exception as exc:
+            log.warning("Groq API call failed (%s). Returning empty response for heuristic fallback.", exc)
 
-    raise RuntimeError("No valid AI API key found. Please set GEMINI_API_KEY or GROQ_API_KEY in backend/.env")
+    log.warning("No operational LLM connection available. Triggering deterministic fallback response.")
+    return ""
+

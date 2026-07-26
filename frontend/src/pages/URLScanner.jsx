@@ -14,19 +14,26 @@ export default function URLScanner() {
   const [error, setError] = useState('')
 
   async function handleScan() {
-    if (!/^https?:\/\//i.test(url.trim())) {
-      setError('Please enter a valid URL starting with http:// or https://.')
+    let cleanUrl = url.trim()
+    if (!cleanUrl) {
+      setError('Please enter a target URL to scan.')
       return
     }
+    if (!/^https?:\/\//i.test(cleanUrl)) {
+      cleanUrl = `https://${cleanUrl}`
+      setUrl(cleanUrl)
+    }
+
     setLoading(true)
     setTargetScore(null)
     setPendingPayload(null)
     setError('')
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/scan/url`, {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'
+      const response = await fetch(`${apiUrl}/scan/url`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: url.trim() }),
+        body: JSON.stringify({ url: cleanUrl }),
       })
       if (!response.ok) {
         const err = await response.json().catch(() => ({}))
@@ -51,7 +58,13 @@ export default function URLScanner() {
       setTargetScore(payload.threatScore)
 
     } catch (scanError) {
-      setError(scanError.message || 'Unable to scan the provided URL.')
+      console.error('URL Scan error:', scanError)
+      const isFetchErr = scanError instanceof TypeError && scanError.message.includes('fetch')
+      setError(
+        isFetchErr
+          ? 'Unable to connect to SentinelAI Backend. Please ensure backend server is running on http://127.0.0.1:8000.'
+          : (scanError.message || 'Unable to scan the provided URL.')
+      )
       setLoading(false)
     }
   }
