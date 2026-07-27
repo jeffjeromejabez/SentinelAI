@@ -59,10 +59,11 @@ export default function URLScanner() {
 
     } catch (scanError) {
       console.error('URL Scan error:', scanError)
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000'
       const isFetchErr = scanError instanceof TypeError && scanError.message.includes('fetch')
       setError(
         isFetchErr
-          ? 'Unable to connect to SentinelAI Backend. Please ensure backend server is running on http://127.0.0.1:8000.'
+          ? `Unable to connect to SentinelAI Backend. Please ensure backend server is running on ${apiUrl}.`
           : (scanError.message || 'Unable to scan the provided URL.')
       )
       setLoading(false)
