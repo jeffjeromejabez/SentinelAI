@@ -1,17 +1,25 @@
+import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import './Navbar.css'
 
 const links = [
-  { to: '/', label: 'Home' },
-  { to: '/screenshot', label: 'Screenshot' },
-  { to: '/url', label: 'URL' },
-  { to: '/email', label: 'Email' },
-  { to: '/conversation', label: 'Conversation' },
-  { to: '/about', label: 'About' },
+  { to: '/', label: 'Home', icon: '🏠' },
+  { to: '/screenshot', label: 'Screenshot', icon: '📸' },
+  { to: '/url', label: 'URL', icon: '🔗' },
+  { to: '/email', label: 'Email', icon: '📧' },
+  { to: '/conversation', label: 'Conversation', icon: '💬' },
+  { to: '/assistant', label: 'Assistant', icon: '🤖' },
+  { to: '/history', label: 'History', icon: '📜' },
+  { to: '/about', label: 'About', icon: 'ℹ️' },
 ]
 
 export default function Navbar() {
   const location = useLocation()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  useEffect(() => {
+    setMobileMenuOpen(false)
+  }, [location])
 
   return (
     <nav className="navbar">
@@ -28,9 +36,14 @@ export default function Navbar() {
           <span className="brand-name">SentinelAI</span>
         </Link>
 
-        <ul className="navbar-links">
+        {/* Desktop Links */}
+        <ul className="navbar-links desktop-only">
           {links.map((link) => (
-            <li key={link.to}><Link to={link.to} className={`nav-link${location.pathname === link.to ? ' active' : ''}`}>{link.label}</Link></li>
+            <li key={link.to}>
+              <Link to={link.to} className={`nav-link${location.pathname === link.to ? ' active' : ''}`}>
+                {link.label}
+              </Link>
+            </li>
           ))}
         </ul>
 
@@ -40,7 +53,36 @@ export default function Navbar() {
             Protected
           </span>
           <Link to="/assistant" className="nav-cta">Get Started</Link>
+
+          {/* Mobile Hamburger Button */}
+          <button 
+            className={`menu-toggle ${mobileMenuOpen ? 'open' : ''}`}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle navigation menu"
+          >
+            <span className="hamburger-line" />
+            <span className="hamburger-line" />
+            <span className="hamburger-line" />
+          </button>
         </div>
+      </div>
+
+      {/* Mobile Dropdown Menu */}
+      <div className={`mobile-menu ${mobileMenuOpen ? 'active' : ''}`}>
+        <ul className="mobile-links">
+          {links.map((link) => (
+            <li key={link.to}>
+              <Link 
+                to={link.to} 
+                className={`mobile-nav-link${location.pathname === link.to ? ' active' : ''}`}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                <span className="link-icon">{link.icon}</span>
+                <span className="link-label">{link.label}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </nav>
   )
