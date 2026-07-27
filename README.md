@@ -1,73 +1,119 @@
+<div align="center">
+
 # 🛡️ SentinelAI
+### *Next-Generation Multimodal AI Threat Intelligence & Scam Detection Platform*
 
-> **Next-Generation AI-Powered Cybersecurity Threat Intelligence & Scam Detection Platform**
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Vercel-black?style=for-the-badge&logo=vercel)](https://sentinel-djsmrw8tr-jeffjeromejabez2024cse-7104s-projects.vercel.app)
+[![API Docs](https://img.shields.io/badge/⚡_API_Docs-Render-46E3B7?style=for-the-badge&logo=render)](https://sentinelai-k5km.onrender.com/docs)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
-SentinelAI is a multi-modal cybersecurity analysis platform designed to detect phishing attempts, social engineering scams, malicious URLs, deceptive emails, fraudulent screenshots, and high-risk chat conversations in real-time. Combining **deterministic heuristic feature extractors** with **multimodal AI threat intelligence (Google Gemini)**, SentinelAI delivers calibrated risk scoring, detailed threat breakdowns, and actionable mitigation guidance.
+[![React](https://img.shields.io/badge/React-19.0-61DAFB?style=flat-square&logo=react)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-8.0-646CFF?style=flat-square&logo=vite)](https://vitejs.dev/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com/)
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python)](https://www.python.org/)
+[![Google Gemini](https://img.shields.io/badge/AI_Engine-Google_Gemini_2.5_Flash-8E44AD?style=flat-square&logo=google)](https://aistudio.google.com/)
+[![Security](https://img.shields.io/badge/Cybersecurity-Real--Time_Protection-00d4ff?style=flat-square)](#-key-features--scanner-modules)
+
+---
+
+**SentinelAI** is an advanced, multi-modal cybersecurity analysis engine engineered to detect phishing attempts, social engineering scams, malicious URLs, deceptive emails, fraudulent login screenshots, and high-risk chat transcripts in real-time.
+
+Combining **deterministic heuristic feature extractors** with **multimodal AI threat intelligence (Google Gemini 2.5 Flash)**, SentinelAI delivers calibrated risk scoring (0–100), itemized threat breakdowns, and actionable mitigation guidance in milliseconds.
+
+</div>
+
+---
+
+## 🎯 Problem vs. Solution
+
+| The Problem ❌ | SentinelAI Solution 🛡️ |
+| :--- | :--- |
+| **Complex Multi-Vector Attacks**: Modern scams mix fake screenshots, urgency language, and deceptive links across chat apps. | **Multimodal Intelligence**: Analyzes text, URL structures, email headers, visual screenshots, and chat logs in a unified engine. |
+| **Black-Box AI Hallucinations**: Standard LLMs often miss technical domain anomalies or give vague answers. | **Hybrid Heuristics + LLM**: Combines mathematical features (domain entropy, TLD risk, header audit) with Gemini vision & reasoning. |
+| **Complex Security Jargon**: Standard virus scanners return raw technical logs that confuse everyday users. | **Calibrated Threat Gauge**: Instant 0–100 visual score with human-readable explanations and step-by-step mitigation actions. |
 
 ---
 
 ## 🌟 Key Features & Scanner Modules
 
-### 🌐 1. URL Threat Intelligence Scanner
-- **Heuristic Signal Extraction**: Calculates domain entropy, checks domain length, identifies high-abuse TLDs (`.tk`, `.xyz`, `.ml`), detects raw IP hosts, HTTPS protocol compliance, and suspicious subdomains.
-- **Brand Impersonation Detection**: Identifies lookalike domains targeting popular banking, e-commerce, and social media platforms.
-- **AI Verification**: Cross-checks heuristic flags with Google Gemini AI to evaluate link destination risk.
+```
+ ┌─────────────────────────────────────────────────────────────────────────────┐
+ │                         SENTINEL AI THREAT MODULES                          │
+ ├────────────────┬─────────────────┬──────────────────┬───────────────────────┤
+ │ 🔗 URL Scanner  │ 📧 Email Audit  │ 🖼️ Vision Scan   │ 💬 Scam Chat Profiler │
+ └────────────────┴─────────────────┴──────────────────┴───────────────────────┘
+```
 
-### 📧 2. Email Phishing Analyzer
-- **Header & Domain Mismatch Audit**: Detects discrepancies between `From` and `Reply-To` headers.
-- **Linguistic Threat Analysis**: Identifies high-urgency manipulation phrases, credential harvesting keywords, and financial lure indicators.
-- **Embedded Link Profiling**: Extracts and inspects embedded links and host domains.
+### 🌐 1. URL Threat Intelligence Scanner
+- **Deterministic Heuristics**: Domain entropy calculation, domain length metrics, high-abuse TLD flag checks (`.tk`, `.xyz`, `.ml`, `.top`), raw IP detection, and HTTPS protocol compliance.
+- **Brand Impersonation Engine**: Lookalike domain inspection targeting banking, e-commerce, and social media platforms.
+- **AI Verification**: Cross-references heuristic flags with Google Gemini AI to evaluate link destination risk.
+
+### 📧 2. Email Phishing & Header Audit
+- **Header Mismatch Audit**: Detects discrepancies between `From` and `Reply-To` headers to catch spoofed senders.
+- **Linguistic Threat Extraction**: Flags high-urgency manipulation phrases, credential harvesting lures, and coercion keywords.
+- **Embedded Link Profiling**: Extracts and inspects embedded links and host domains automatically.
 
 ### 🖼️ 3. Multimodal Screenshot & Vision Scanner
-- **UI & Form Inspection**: Leverages vision AI to inspect web page screenshots, login forms, password inputs, and verification banners.
-- **Brand Logo & Spoofing Check**: Detects counterfeit login pages mimicking Google, Microsoft, PayPal, and banking portals.
-- **Visual Risk Score**: Combines visual cues with text extraction for accurate visual threat detection.
+- **Visual Form & UI Inspection**: Uses vision AI to analyze web page screenshots, login forms, password inputs, and fake verification popups.
+- **Brand Logo & Spoof Check**: Detects counterfeit login pages mimicking Google, Microsoft, PayPal, and banking portals.
+- **Visual Risk Score**: Blends visual layout analysis with OCR text extraction for visual threat detection.
 
-### 💬 4. Scam Conversation & Social Engineering Analyzer
-- **Chat Log Profiling**: Analyzes copied chat transcripts from WhatsApp, Telegram, SMS, Instagram, Discord, and Messenger.
-- **Tactics Identification**: Detects authority impersonation (Police, Customs, Bank Manager), OTP/PIN/Password theft, UPI collect traps, lottery/job scams, romance fraud, and remote-access lures (AnyDesk/TeamViewer).
-- **Extracted Signals**: Automatically identifies phone numbers, UPI IDs, bank details, and suspicious URLs embedded within messages.
+### 💬 4. Scam Conversation & Social Engineering Profiler
+- **Chat Transcript Analysis**: Profiles raw chat logs from WhatsApp, Telegram, SMS, Instagram, Discord, and Messenger.
+- **Tactics Identification**: Detects authority impersonation (Police, Customs, Bank Manager), OTP/PIN theft, UPI collect traps, lottery/job scams, romance lures, and remote-access software traps (AnyDesk/TeamViewer).
+- **Signal Extraction**: Automatically extracts phone numbers, UPI IDs, bank details, and embedded URLs from messages.
 
 ### 🤖 5. Interactive Security AI Assistant
-- **Real-Time Security Chat**: Provides an interactive cybersecurity chatbot assistant.
-- **Incident Guidance**: Delivers instant advice on active threats, security best practices, and emergency response steps.
+- **Real-Time Security Chat**: Conversational AI security assistant trained on cybersecurity best practices.
+- **Incident Response Guidance**: Delivers instant advice on active threats, account protection steps, and emergency response.
 
-### 📊 6. Dynamic Threat Meter & Comprehensive Verdict
-- **Calibrated Risk Gauge**: Visual `ThreatMeter` categorizing threats into 5 levels: **Safe** (0–20), **Low** (21–40), **Medium** (41–60), **High** (61–80), and **Critical** (81–100).
-- **Technical Breakdown**: Displays confidence scores, specific detected threats, input summaries, and step-by-step mitigation instructions.
+### 📊 6. Dynamic Calibrated Threat Gauge
+- **5-Tier Risk Classification**:
+  - 🟢 **Safe** (0–20)
+  - 🟡 **Low** (21–40)
+  - 🟠 **Medium** (41–60)
+  - 🔴 **High** (61–80)
+  - 🚨 **Critical** (81–100)
+- **Comprehensive Audit Breakdown**: Displays confidence metrics, identified threats, input summaries, and immediate defense steps.
 
-### 📜 7. Scan Audit History
-- Maintains a local audit history of recent scans for easy tracking and review.
+### 📜 7. Scan Audit History Log
+- Persistent local history log tracking past threat scans with instant detail modal views.
 
 ---
 
-## 🏗️ Architecture & Technical Stack
+## 🏗️ System Architecture & Data Flow
 
 ```mermaid
 flowchart TD
-    User([User / Web UI]) -->|Submit URL / Email / Screenshot / Chat| Frontend[React 19 + Vite UI]
-    Frontend -->|REST API Request| Backend[FastAPI Engine - Port 8000]
+    User([👤 User / Web App]) -->|Submit URL / Email / Screenshot / Chat| Frontend[React 19 + Vite UI]
+    Frontend -->|REST API Request| Backend[FastAPI Engine - Python 3.10+]
     
     subgraph Backend_Pipeline [Backend Processing Pipeline]
         Backend --> FeatureExtractor[Heuristic Feature Extractors]
         FeatureExtractor -->|Deterministic Signals| PromptBuilder[Evidence Prompt Formulator]
-        PromptBuilder --> LLMOrchestrator[Gemini / Groq LLM Client]
+        PromptBuilder --> LLMOrchestrator[Gemini / Groq LLM Orchestrator]
     end
     
-    LLMOrchestrator -->|Multimodal LLM Call| GeminiAPI[(Google Gemini 2.5 Flash API)]
+    LLMOrchestrator -->|Multimodal API Call| GeminiAPI[(Google Gemini 2.5 Flash API)]
     GeminiAPI -->|Structured Threat JSON| LLMOrchestrator
     LLMOrchestrator --> Evaluator[Calibrated Risk Engine]
     Evaluator -->|Unified Threat Payload| Frontend
-    Frontend -->|Render Threat Meter & Analysis| User
+    Frontend -->|Render Dynamic ThreatMeter & Report| User
 ```
 
-| Layer | Technology | Description |
+---
+
+## 🛠️ Technical Stack
+
+| Layer | Technology | Role & Description |
 | :--- | :--- | :--- |
-| **Frontend** | React 19, Vite 8, CSS | Modern cyber-themed UI with glassmorphism, animated grid, and custom ThreatMeter gauge. |
-| **Backend** | Python 3.10+, FastAPI 0.115, Pydantic v2 | High-performance asynchronous REST API backend. |
-| **AI Threat Engine** | Google Gemini API (`gemini-2.5-flash`) | Multimodal LLM analysis with fallback support for Groq (`llama-3.3-70b-versatile`). |
-| **Feature Extraction** | Custom Python Extractors | Deterministic heuristics for URLs, Emails, Conversations, and Screenshots. |
-| **Icons & Styling** | Lucide React, Pure Vanilla CSS | Crisp vector icons and responsive dark-mode cyber design. |
+| **Frontend** | React 19, Vite 8, React Router v7 | Glassmorphic cyber UI, animated grid, dynamic ThreatMeter gauge. |
+| **Styling** | Pure Vanilla CSS | Custom design tokens, modern dark theme, glow effects, responsive layouts. |
+| **Backend** | Python 3.10+, FastAPI 0.115, Pydantic v2 | Asynchronous high-throughput REST API with strict request validation. |
+| **AI Engine** | Google Gemini API (`gemini-2.5-flash`) | Multimodal LLM analysis with Groq (`llama-3.3-70b-versatile`) fallback. |
+| **Extractors** | Custom Python Modules | Deterministic feature extraction for URLs, emails, images, and chat logs. |
+| **Hosting** | Vercel (Frontend) + Render (Backend) | Global edge deployment with automatic SSL and CORS protection. |
 
 ---
 
@@ -75,117 +121,86 @@ flowchart TD
 
 ```
 SentinelAI/
-├── backend/                        # Python FastAPI Backend Engine
-│   ├── main.py                     # API routes, Pydantic models & endpoints
-│   ├── gemini_client.py            # Google Gemini & Groq API orchestrator
+├── backend/                        # Python FastAPI Engine
+│   ├── main.py                     # API routes, Pydantic models & CORS setup
+│   ├── gemini_client.py            # Gemini 2.5 Flash & Groq LLM client
 │   ├── url_extractor.py            # URL heuristic feature extractor
 │   ├── email_extractor.py          # Email header & phishing phrase extractor
 │   ├── conversation_extractor.py   # Scam & social engineering analyzer
 │   ├── screenshot_extractor.py     # Image visual feature extractor
-│   ├── test_endpoints.py           # Endpoint integration tests
+│   ├── test_endpoints.py           # Integration tests
 │   ├── test_comprehensive.py       # Full pipeline test suite
-│   ├── requirements.txt            # Python dependencies
-│   └── .env.example                # Environment variables template
+│   └── requirements.txt            # Python dependencies
 ├── frontend/                       # React + Vite Web Application
 │   ├── src/
-│   │   ├── components/             # Reusable UI components
-│   │   │   ├── Navbar.jsx          # Glassmorphism header navbar
-│   │   │   ├── ThreatMeter.jsx     # Dynamic animated risk gauge
-│   │   │   ├── PageShell.jsx       # Layout wrapper
-│   │   │   └── CyberDecorations.jsx# Cyber background grid & decorations
-│   │   ├── pages/                  # Page views
-│   │   │   ├── Home.jsx            # Modern landing page dashboard
-│   │   │   ├── URLScanner.jsx      # URL scanner page
-│   │   │   ├── EmailScanner.jsx    # Email scanner page
-│   │   │   ├── ScreenshotScanner.jsx # Screenshot scanner page
-│   │   │   ├── ConversationScanner.jsx # Chat/scam conversation scanner
-│   │   │   ├── AIAssistant.jsx     # AI cybersecurity chat assistant
-│   │   │   ├── Result.jsx          # Detailed scan result view
-│   │   │   ├── History.jsx         # Scan history audit log
-│   │   │   └── About.jsx           # About page
-│   │   ├── App.jsx                 # Main application routing
-│   │   └── index.css               # Core styling tokens
+│   │   ├── components/             # Reusable UI components (Navbar, ThreatMeter, PageShell)
+│   │   ├── pages/                  # Scanner views (URL, Email, Screenshot, Chat, Assistant, History)
+│   │   ├── lib/                    # History storage utilities
+│   │   ├── App.jsx                 # Client-side routing
+│   │   └── index.css               # Core styling tokens & animations
 │   └── package.json                # Node dependencies
-├── start_backend.bat               # One-click Windows script for Backend
-├── start_frontend.bat              # One-click Windows script for Frontend
-├── screenshots/                    # UI preview screenshots
+├── start_backend.bat               # One-click Windows launcher for Backend
+├── start_frontend.bat              # One-click Windows launcher for Frontend
 ├── LICENSE                         # MIT License
-└── README.md                       # Project documentation
+└── README.md                       # Documentation
 ```
 
 ---
 
-## 🚀 Quickstart & Setup Guide
+## 🚀 Quickstart & Installation
 
 ### Prerequisites
-- **Node.js**: v18.0.0 or higher
-- **Python**: v3.10 or higher
-- **Google Gemini API Key**: Obtain a free key from [Google AI Studio](https://aistudio.google.com/)
+- **Node.js**: `v18.0.0` or higher
+- **Python**: `v3.10` or higher
+- **Google Gemini API Key**: Free key from [Google AI Studio](https://aistudio.google.com/)
 
 ---
 
 ### 1. Backend Setup
 
-1. Open a terminal in the `backend` directory:
-   ```bash
-   cd backend
-   ```
+```bash
+# 1. Navigate to backend directory
+cd backend
 
-2. Create and activate a Python virtual environment:
-   ```bash
-   # Windows
-   python -m venv .venv
-   .venv\Scripts\activate
+# 2. Create and activate virtual environment
+python -m venv .venv
+# On Windows:
+.venv\Scripts\activate
+# On Linux/macOS:
+source .venv/bin/activate
 
-   # Linux / macOS
-   python3 -m venv .venv
-   source .venv/bin/activate
-   ```
+# 3. Install dependencies
+pip install -r requirements.txt
 
-3. Install required Python packages:
-   ```bash
-   pip install -r requirements.txt
-   ```
+# 4. Create .env file and add your API key
+echo GEMINI_API_KEY=your_google_gemini_api_key_here > .env
 
-4. Configure your environment variables:
-   Copy `.env.example` to `.env` inside the `backend` directory and add your API key:
-   ```env
-   GEMINI_API_KEY=your_google_gemini_api_key_here
-   ```
-
-5. Start the FastAPI server:
-   ```bash
-   python -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload
-   ```
-   *The backend will run on `http://127.0.0.1:8000`. API documentation is available at `http://127.0.0.1:8000/docs`.*
+# 5. Launch FastAPI Backend
+python -m uvicorn main:app --host 127.0.0.1 --port 8000 --reload
+```
+*API docs will be available at `http://127.0.0.1:8000/docs`.*
 
 ---
 
 ### 2. Frontend Setup
 
-1. Open a new terminal in the `frontend` directory:
-   ```bash
-   cd frontend
-   ```
+```bash
+# 1. Navigate to frontend directory
+cd frontend
 
-2. Install Node dependencies:
-   ```bash
-   npm install
-   ```
+# 2. Install Node packages
+npm install
 
-3. Launch the Vite development server:
-   ```bash
-   npm run dev
-   ```
-   *The web app will open at `http://localhost:5173`.*
+# 3. Launch Vite Dev Server
+npm run dev
+```
+*Web app will be running at `http://localhost:5173`.*
 
 ---
 
 ### ⚡ One-Click Startup (Windows)
-
-You can launch both services quickly using the provided batch files:
-- Double-click **`start_backend.bat`** to start the FastAPI server.
-- Double-click **`start_frontend.bat`** to start the React frontend.
+- Double-click **`start_backend.bat`** to start FastAPI.
+- Double-click **`start_frontend.bat`** to start Vite React UI.
 
 ---
 
@@ -193,40 +208,20 @@ You can launch both services quickly using the provided batch files:
 
 | Endpoint | Method | Payload | Description |
 | :--- | :--- | :--- | :--- |
-| `/scan/url` | `POST` | `{ "url": "https://..." }` | Scans link for domain entropy, HTTPS status, TLD risk, and brand spoofing. |
+| `/scan/url` | `POST` | `{ "url": "https://..." }` | Scans link for domain entropy, HTTPS, TLD risk, and brand spoofing. |
 | `/scan/email` | `POST` | `{ "email": "..." }` | Analyzes email headers, urgency flags, and phishing trigger words. |
-| `/scan/screenshot` | `POST` | `{ "image_name": "...", "image_data": "base64..." }` | Multimodal visual inspection of website screenshots or login pages. |
-| `/scan/conversation` | `POST` | `{ "text": "..." }` | Analyzes chat messages for scam tactics, OTP theft, UPI fraud, and coercion. |
-| `/chat` | `POST` | `{ "message": "...", "history": [] }` | Interacts with the AI Security Assistant. |
-| `/history` | `GET` | *None* | Retrieves recent scan history logs. |
-| `/history/{id}` | `DELETE` | *None* | Removes a specific scan log from history. |
-
----
-
-## 🧪 Testing
-
-Run the automated backend integration test suite to verify extractor functions and API endpoints:
-
-```bash
-cd backend
-python test_endpoints.py
-python test_comprehensive.py
-```
-
----
-
-## 📈 Roadmap & Development Progress
-
-- [x] **Day 1**: Project idea finalized & repository structure scaffolded (`frontend/`, `backend/`, `ai_model/`, `dataset/`, `docs/`)
-- [x] **Day 2**: Requirements finalized, product workflow documented, tech stack decided
-- [x] **Day 3**: React + Vite frontend setup & glassmorphism cyber-themed landing page design
-- [x] **Day 4 — Backend API Setup**: High-performance FastAPI backend server (`backend/main.py`), CORS middleware, Pydantic schemas, validation error handlers
-- [x] **Day 5 — AI Model Integration**: Google Gemini 2.5 Flash API client & model orchestrator (`backend/gemini_client.py`), vision analysis, and deterministic heuristic extractors for URLs, Emails, Screenshots, and Scam Conversations
-- [x] **Day 6 — Connect Frontend to Backend**: Full frontend integration with backend endpoints (`/scan/url`, `/scan/email`, `/scan/screenshot`, `/scan/conversation`, `/chat`), dynamic `ThreatMeter` gauge rendering, and live scan audit log
-- [x] **Day 7 — Testing & Deployment**: Comprehensive test suite (`test_comprehensive.py`), production build verification (`npm run build`), and one-click startup scripts (`start_backend.bat`, `start_frontend.bat`)
+| `/scan/screenshot` | `POST` | `{ "image_name": "...", "image_data": "base64..." }` | Multimodal visual inspection of screenshots or login pages. |
+| `/scan/conversation` | `POST` | `{ "text": "..." }` | Analyzes chat logs for scam tactics, OTP theft, UPI fraud, and coercion. |
+| `/assistant/chat` | `POST` | `{ "message": "...", "history": [] }` | Interacts with the AI Security Assistant. |
 
 ---
 
 ## 📄 License
 
-This project is licensed under the [MIT License](LICENSE).
+Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more information.
+
+---
+
+<div align="center">
+  <b>Built for Hackathons with ❤️ by the SentinelAI Team</b>
+</div>
