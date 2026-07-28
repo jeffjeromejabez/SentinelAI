@@ -55,8 +55,12 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "https://sentinel-fb7gt3bv0-jeffjeromejabez2024cse-7104s-projects.vercel.app",
+        "https://sentinel-ai-eosin-mu.vercel.app",
         "https://sentinel-djsmrw8tr-jeffjeromejabez2024cse-7104s-projects.vercel.app",
+        "*",
     ],
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],

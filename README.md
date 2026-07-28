@@ -3,7 +3,7 @@
 # 🛡️ SentinelAI
 ### *Next-Generation Multimodal AI Threat Intelligence & Scam Detection Platform*
 
-[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Vercel-black?style=for-the-badge&logo=vercel)](https://sentinel-djsmrw8tr-jeffjeromejabez2024cse-7104s-projects.vercel.app)
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Vercel-black?style=for-the-badge&logo=vercel)](https://sentinel-fb7gt3bv0-jeffjeromejabez2024cse-7104s-projects.vercel.app)
 [![API Docs](https://img.shields.io/badge/⚡_API_Docs-Render-46E3B7?style=for-the-badge&logo=render)](https://sentinelai-k5km.onrender.com/docs)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
 
