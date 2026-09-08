@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
+import { Analytics } from '@vercel/analytics/react'
 import Home from './pages/Home'
 import ScreenshotScanner from './pages/ScreenshotScanner'
 import URLScanner from './pages/URLScanner'
@@ -11,16 +12,19 @@ import About from './pages/About'
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/screenshot" element={<ScreenshotScanner />} />
-      <Route path="/url" element={<URLScanner />} />
-      <Route path="/email" element={<EmailScanner />} />
-      <Route path="/conversation" element={<ConversationScanner />} />
-      <Route path="/history" element={<History />} />
-      <Route path="/assistant" element={<AIAssistant />} />
-      <Route path="/result" element={<Result />} />
-      <Route path="/about" element={<About />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/screenshot" element={<ScreenshotScanner />} />
+        <Route path="/url" element={<URLScanner />} />
+        <Route path="/email" element={<EmailScanner />} />
+        <Route path="/conversation" element={<ConversationScanner />} />
+        <Route path="/history" element={<History />} />
+        <Route path="/assistant" element={<AIAssistant />} />
+        <Route path="/result" element={<Result />} />
+        <Route path="/about" element={<About />} />
+      </Routes>
+      <Analytics />
+    </>
   )
 }
