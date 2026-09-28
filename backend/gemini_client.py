@@ -137,7 +137,16 @@ def _call_groq(prompt: str, system_instruction: str = "", image_b64: str = None,
         messages.append({"role": "system", "content": system_instruction})
     messages.append({"role": "user", "content": prompt})
 
-    for model in [get_groq_text_model(), "llama-3.1-8b-instant"]:
+    # Model priority list with robust fallback
+    candidate_models = []
+    preferred = get_groq_text_model()
+    if preferred:
+        candidate_models.append(preferred)
+    for m in ["openai/gpt-oss-120b", "qwen/qwen3.8-27b", "openai/gpt-oss-20b", "llama-3.3-70b-versatile", "llama-3.1-8b-instant"]:
+        if m not in candidate_models:
+            candidate_models.append(m)
+
+    for model in candidate_models:
         for attempt in range(2):
             t0 = time.time()
             try:
