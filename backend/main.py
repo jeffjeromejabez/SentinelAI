@@ -366,6 +366,18 @@ def build_result(scan_type: str, details: dict, threat_score: int, risk_level: s
 
 # ── Routes ─────────────────────────────────────────────────────────────────────
 
+@app.get("/")
+def root():
+    return {
+        "service": "SentinelAI Cybersecurity Threat Analysis API",
+        "version": "3.1.0",
+        "status": "online",
+        "frontend": "https://sentinel-ai-eosin-mu.vercel.app",
+        "docs": "/docs",
+        "groq_configured": bool(get_groq_key()),
+    }
+
+
 @app.get("/health")
 def health():
     return {
